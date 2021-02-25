@@ -74,3 +74,5 @@ def execute(db, sql, args=()):
     cur.close()
 
     return id
+
+#Routes
