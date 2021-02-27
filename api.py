@@ -8,6 +8,8 @@ import sys
 import textwrap
 import logging.config
 import sqlite3
+import pandas as pd
+
 
 import bottle
 from bottle import get, post, error, abort, request, response, HTTPResponse
@@ -16,12 +18,15 @@ from bottle.ext import sqlite
 # Set up app, plugins, and logging
 #
 app = bottle.default_app()
-app.config.load_config('./etc/api.ini')
+app.config.load_config('api.ini')
 
 plugin = sqlite.Plugin(app.config['sqlite.dbfile'])
 app.install(plugin)
 
-logging.config.fileConfig(app.config['logging.config'])
+
+
+
+#logging.config.fileConfig(app.config['logging.config'])
 
 
 # Return errors in JSON
@@ -76,3 +81,52 @@ def execute(db, sql, args=()):
     return id
 
 #Routes
+
+#USER SERVICE
+@get('/createUser')
+def createUser(db):
+    #Registers a new user account. Returns true if username i
+    all_books = query(db, 'SELECT * FROM user;')
+
+    return {'user': all_books}
+
+    
+ 
+
+@app.route("/checkPassword", methods=['GET'])
+def checkPassword(username, password):
+    #Returns true if the password parameter matches the password stored for the username.
+    pass
+
+@app.route("/addFollower", methods=['PUT'])
+def addFollower(username, usernameToFollow):
+    #Start following a new user.
+    pass
+
+
+@app.route("/removeFollower", methods=['PUT'])
+def removeFollower(username, usernameToRemove):
+    #Stop following a user.
+    pass
+
+
+def getUserTimeline(username):
+    #first check if user is in db
+    #if not, return error
+    #else find the post with the most recent date
+    pass
+def getPublicTimelinme():
+    #first, check if user is in db
+    #if not, return error
+    #else return all the post from that user
+    pass
+def getHomeTimeline(username):
+    #first, checkf if user is in db
+    #if not, return error
+    #else return recent posts from all the users that this user is following
+    pass
+def postTweet(username, text):
+    #first check if the ussername exist
+    #if not, error
+    #else, post the new tweet
+    pass
