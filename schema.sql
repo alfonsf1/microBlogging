@@ -37,9 +37,6 @@ INSERT INTO user VALUES(3, "Alfonso", "alfonso@gmail.com", "395i9g");
 INSERT INTO user VALUES(4, "Yash", "yash@gmail.com", "395i9g");
 INSERT INTO user VALUES(5, "Rosendo", "rosendo@gmail.com", "395i9g");
 
-
-
-
 INSERT INTO post VALUES(1, "Alfonso Figueroa", "Today is a great day!", 1);
 INSERT INTO post VALUES(2, "Alfonso Figueroa", "Today is a great day!", 2);
 INSERT INTO post VALUES(3, "Alfonso Figueroa", "Today is a great day!", 3);
