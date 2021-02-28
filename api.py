@@ -15,15 +15,20 @@ import bottle
 from bottle import get, post, error, abort, request, response, HTTPResponse
 from bottle.ext import sqlite
 
-# Set up app, plugins, and logging
-#
+#Set up app, plugins, and logging
+
 app = bottle.default_app()
 app.config.load_config('api.ini')
 
 plugin = sqlite.Plugin(app.config['sqlite.dbfile'])
 app.install(plugin)
 
-
+# def get_db():
+#     db = getattr(g, '_database', None)
+#     if db is None:
+#         db = g._database = sqlite3.connect('schema.db')
+#         print("Database connected")
+#     return db
 
 
 #logging.config.fileConfig(app.config['logging.config'])
@@ -87,7 +92,7 @@ def execute(db, sql, args=()):
 def createUser(db):
     #Registers a new user account. Returns true if username i
     all_books = query(db, 'SELECT * FROM user;')
-
+    
     return {'user': all_books}
 
     
