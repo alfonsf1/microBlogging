@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS post(
     author VARCHAR(255) NOT NULL,
     postText VARCHAR(255) NOT NULL,
     postUserID  INTEGER NOT NULL,
-
+quit
     PRIMARY KEY(postID),
     FOREIGN KEY(postUserID) REFERENCES user(userID)
 );
