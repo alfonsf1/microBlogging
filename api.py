@@ -88,22 +88,42 @@ def execute(db, sql, args=()):
 #Routes
 
 #USER SERVICE
-@get('/createUser')
+# http post localhost:5000/createUser username='Sergio' password='xyz789' email='Sergio@gmail.com'
+@post('/createUser')
 def createUser(db):
     #Registers a new user account. Returns true if username i
-    all_books = query(db, 'SELECT * FROM user;')
-    
-    return {'user': all_books}
+    creatingUser = request.json
+    if not creatingUser:
+        abort(400)
 
-    
+    posted_entry = creatingUser.keys()
+    req_entry = {'username', 'password', 'email'}
+
+    if not req_entry <= posted_entry:
+        abort(400, f'Missing fields: {req_entry - posted_entry}')
+
+    try:
+        creatingUser['userID'] = execute(db, '''
+        INSERT INTO user(username, password, email)
+        VALUES(:username, :password, :email)
+        ''', creatingUser)
+    except sqlite3.IntegrityError as e:
+        abort(409, str(e))
+
+    response.status = 201
+    response.set_header('Location', f"/createUser{creatingUser['userID']}")
+
+    return creatingUser
  
-
-@app.route("/checkPassword", methods=['GET'])
-def checkPassword(username, password):
+# http localhost:5000/checkPassword/Sergio/xyz789
+@get('/checkPassword/<username>/<password>')
+def checkPassword(username, password, db):
+    user = query(db, 'SELECT username, password FROM user WHERE (username = ? AND password = ?)', [username, password], one=True)
+    if not user:
+        abort(404)
     #Returns true if the password parameter matches the password stored for the username.
-    pass
+    return {'status': 'true'}
 
-@app.route("/addFollower", methods=['PUT'])
 def addFollower(username, usernameToFollow):
     #Start following a new user.
     pass
@@ -120,18 +140,55 @@ def getUserTimeline(username):
     #if not, return error
     #else find the post with the most recent date
     pass
-def getPublicTimelinme():
-    #first, check if user is in db
-    #if not, return error
-    #else return all the post from that user
-    pass
+
+#http GET localhost:5000/getPublicTimeline
+@get('/getPublicTimeline')
+def getPublicTimeline(db):
+    public_timeline = query(db, 'SELECT author, postText from post')
+
+    return {'public_timeline': public_timeline}
 def getHomeTimeline(username):
     #first, checkf if user is in db
     #if not, return error
     #else return recent posts from all the users that this user is following
     pass
-def postTweet(username, text):
+
+@post('/postTweet')
+def postTweet(db):
     #first check if the ussername exist
     #if not, error
     #else, post the new tweet
-    pass
+
+    createTweet = request.json
+    if not createTweet:
+        abort(400)
+
+    posted_entry=createTweet.keys()
+    req_entry={'author', 'postText'}
+
+    if not req_entry <= posted_entry:
+        abort(400, f'Missing fields: {req_entry - posted_entry}')
+    
+    try:
+         createTweet['postID'] = execute(db, '''
+    INSERT INTO post(author, postText)
+    VALUES(:author, :postText)
+    ''', createTweet)
+    except sqlite3.IntegrityError as e:
+        abort(409, str(e))
+    response.status = 201
+    response.set_header('Location', f"/postTweet{createTweet['postID']}")
+
+    return createTweet
+
+
+
+
+@get('/seeAllData')
+def seeAllData(db):
+    #see all data
+    all_user = query(db, 'SELECT * FROM user;')
+    all_followers = query(db, 'SELECT * FROM followers;')
+    all_post = query(db, 'SELECT * FROM post;')
+    
+    return {'user': all_user, 'followers': all_followers, 'post': all_post}
