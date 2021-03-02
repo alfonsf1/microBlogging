@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS post(
     author VARCHAR(255) NOT NULL,
     postText VARCHAR(255) NOT NULL,
     postUserID  INTEGER NOT NULL,
-quit
+    timestamp INTEGER DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(postID),
     FOREIGN KEY(postUserID) REFERENCES user(userID)
 );
@@ -37,11 +37,11 @@ INSERT INTO user VALUES(3, "Alfonso", "alfonso@gmail.com", "395i9g");
 INSERT INTO user VALUES(4, "Yash", "yash@gmail.com", "395i9g");
 INSERT INTO user VALUES(5, "Rosendo", "rosendo@gmail.com", "395i9g");
 
-INSERT INTO post VALUES(1, "Alfonso Figueroa", "Today is a great day!", 1);
-INSERT INTO post VALUES(2, "Alfonso Figueroa", "Today is a great day!", 2);
-INSERT INTO post VALUES(3, "Alfonso Figueroa", "Today is a great day!", 3);
-INSERT INTO post VALUES(4, "Alfonso Figueroa", "Today is a great day!", 4);
-INSERT INTO post VALUES(5, "Alfonso Figueroa", "Today is a great day!", 5);
+INSERT INTO post(postUserID, author, postText) VALUES(1, "Ryan", "Hi im Ryan");
+INSERT INTO post(postUserID, author, postText) VALUES(2, "Pure", "Hi Im Pure");
+INSERT INTO post(postUserID, author, postText) VALUES(3, "Alfonso", "Hi! Im Alfonso");
+INSERT INTO post(postUserID, author, postText) VALUES(4, "Yash", "Hi! Im Yash");
+INSERT INTO post(postUserID, author, postText) VALUES(5, "Rosendo", "Hi! Im Rosendo!");
 
 INSERT INTO followers(userID, followingID) VALUES(1, 2);
 INSERT INTO followers(userID, followingID) VALUES(2, 5);
