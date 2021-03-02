@@ -42,13 +42,14 @@ INSERT INTO post(postUserID, author, postText) VALUES(2, "Pure", "Hi Im Pure");
 INSERT INTO post(postUserID, author, postText) VALUES(3, "Alfonso", "Hi! Im Alfonso");
 INSERT INTO post(postUserID, author, postText) VALUES(4, "Yash", "Hi! Im Yash");
 INSERT INTO post(postUserID, author, postText) VALUES(5, "Rosendo", "Hi! Im Rosendo!");
+INSERT INTO post(postUserID, author, postText) VALUES (3, "Alfonso", "Bye Alfonso");
+INSERT INTO post(postUserID, author, postText) VALUES (2, "Pure", "Bye Pure");
 
 INSERT INTO followers(userID, followingID) VALUES(1, 2);
 INSERT INTO followers(userID, followingID) VALUES(2, 5);
 INSERT INTO followers(userID, followingID) VALUES(3, 1);
 INSERT INTO followers(userID, followingID) VALUES(4, 2);
 INSERT INTO followers(userID, followingID) VALUES(5, 4);
-
 
 
 

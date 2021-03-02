@@ -134,12 +134,20 @@ def removeFollower(username, usernameToRemove):
     #Stop following a user.
     pass
 
-
-def getUserTimeline(username):
+#http GET localhost:5000/getUserTimeline/Alfonso
+@get('/getUserTimeline/<username>')
+def getUserTimeline(username, db):
     #first check if user is in db
     #if not, return error
     #else find the post with the most recent date
-    pass
+    userPost = query(db, 'SELECT author, postText, timestamp FROM post WHERE author = ?', [username])
+    if not userPost:
+        abort(404)
+    print(userPost)
+    userTimeline = userPost.reverse()
+    return userTimeline
+    
+
 
 #http GET localhost:5000/getPublicTimeline
 @get('/getPublicTimeline')
