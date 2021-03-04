@@ -6,8 +6,7 @@ CREATE TABLE IF NOT EXISTS post(
     postText VARCHAR(255) NOT NULL,
     postUserID  INTEGER NOT NULL,
     timestamp INTEGER DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(postID),
-    FOREIGN KEY(postUserID) REFERENCES user(userID)
+    PRIMARY KEY(postID)
 );
 
 INSERT INTO post(postUserID, author, postText) VALUES(1, "Ryan", "Hi im Ryan");
