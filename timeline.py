@@ -18,7 +18,7 @@ from bottle.ext import sqlite
 #Set up app, plugins, and logging
 
 app = bottle.default_app()
-app.config.load_config('api.ini')
+app.config.load_config('timeline.ini')
 
 plugin2 = sqlite.Plugin(app.config['sqlite.dbfile2'])
 app.install(plugin2)
@@ -85,7 +85,7 @@ def execute(db, sql, args=()):
 
     return id
 
-#Routes
+######################Routes#####################
 
 #http GET localhost:5000/getUserTimeline/Alfonso
 @get('/getUserTimeline/<username>')
@@ -97,8 +97,8 @@ def getUserTimeline(username, db):
     if not userPost:
         abort(404)
     print(userPost)
-    userTimeline = userPost.reverse()
-    return userTimeline
+    # userTimeline = userPost.reverse()
+    return {'userTimeline': userPost}
     
 
 

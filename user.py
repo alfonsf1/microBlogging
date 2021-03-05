@@ -18,7 +18,7 @@ from bottle.ext import sqlite
 #Set up app, plugins, and logging
 
 app = bottle.default_app()
-app.config.load_config('api.ini')
+app.config.load_config('user.ini')
 
 plugin = sqlite.Plugin(app.config['sqlite.dbfile'])
 app.install(plugin)
@@ -116,7 +116,7 @@ def createUser(db):
 
     return creatingUser
  
-# http localhost:5000/checkPassword/Sergio/xyz789
+# http localhost:5000/checkPassword/Alfonso/abc123
 @get('/checkPassword/<username>/<password>')
 def checkPassword(username, password, db):
     user = query(db, 'SELECT username, password FROM user WHERE (username = ? AND password = ?)', [username, password], one=True)
@@ -125,9 +125,40 @@ def checkPassword(username, password, db):
     #Returns true if the password parameter matches the password stored for the username.
     return {'status': 'true'}
 
-def addFollower(username, usernameToFollow):
+@post('/addFollower')
+def addFollower(db):
+    addingFollower = request.json
+    if not addingFollower:
+        abort(400)
+
+    posted_entry = addingFollower.keys()
+    req_entry = {'username', 'follower'}
+
+    #reqEntryList = list(req_entry)
+    
+
+
+
+  
+
+    if not req_entry <= posted_entry:
+        abort(400, f'Missing fields: {req_entry - posted_entry}')
+
+    try:
+        userID = query(db, 'SELECT userID from user where username = ?', [addingFollower['username']], one=True)
+        followerID = query(db, 'SELECT userID from user WHERE username = ?', [addingFollower['follower']], one=True)
+        print(userID)
+        print(followerID)
+        addingFollower['id'] = execute(db, f"INSERT INTO followers(userID, followingID) VALUES(\"{userID['userID']}\", \"{followerID['userID']}\")", addingFollower)
+    except sqlite3.IntegrityError as e:
+        abort(409, str(e))
+
+    response.status = 201
+    response.set_header('Location', f"/createUser{addingFollower['id']}")
+
+    return addingFollower
     #Start following a new user.
-    pass
+    #pass
 
 
 @app.route("/removeFollower", methods=['PUT'])
