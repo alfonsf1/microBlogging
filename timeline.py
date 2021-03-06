@@ -114,12 +114,13 @@ def getHomeTimeline(username):
     #else return recent posts from all the users that this user is following
     pass
 
+#
 @post('/postTweet')
 def postTweet(db):
     #first check if the ussername exist
     #if not, error
     #else, post the new tweet
-
+    userDB = sqlite3.connect('user.db')
     createTweet = request.json
     if not createTweet:
         abort(400)
@@ -131,10 +132,9 @@ def postTweet(db):
         abort(400, f'Missing fields: {req_entry - posted_entry}')
     
     try:
-         createTweet['postID'] = execute(db, '''
-    INSERT INTO post(author, postText)
-    VALUES(:author, :postText)
-    ''', createTweet)
+         userID = query(userDB, 'SELECT userID from user WHERE username = ?', [createTweet['author']], one=True)
+         createTweet['postID'] = execute(db, f'''INSERT INTO post(author, postText, postUserID) 
+         VALUES(\"{createTweet['author']}\", \"{createTweet['postText']}\", \"{userID['userID']}\")''', createTweet)
     except sqlite3.IntegrityError as e:
         abort(409, str(e))
     response.status = 201
