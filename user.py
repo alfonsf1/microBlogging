@@ -12,7 +12,7 @@ import pandas as pd
 
 
 import bottle
-from bottle import get, post, error, abort, request, response, HTTPResponse
+from bottle import get, post, delete, error, abort, request, response, HTTPResponse
 from bottle.ext import sqlite
 
 #Set up app, plugins, and logging
@@ -125,6 +125,7 @@ def checkPassword(username, password, db):
     #Returns true if the password parameter matches the password stored for the username.
     return {'status': 'true'}
 
+#http POST localhost:5000/addFollower username="Alfonso" follower="Rosendo"
 @post('/addFollower')
 def addFollower(db):
     addingFollower = request.json
@@ -134,21 +135,12 @@ def addFollower(db):
     posted_entry = addingFollower.keys()
     req_entry = {'username', 'follower'}
 
-    #reqEntryList = list(req_entry)
-    
-
-
-
-  
-
     if not req_entry <= posted_entry:
         abort(400, f'Missing fields: {req_entry - posted_entry}')
 
     try:
         userID = query(db, 'SELECT userID from user where username = ?', [addingFollower['username']], one=True)
         followerID = query(db, 'SELECT userID from user WHERE username = ?', [addingFollower['follower']], one=True)
-        print(userID)
-        print(followerID)
         addingFollower['id'] = execute(db, f"INSERT INTO followers(userID, followingID) VALUES(\"{userID['userID']}\", \"{followerID['userID']}\")", addingFollower)
     except sqlite3.IntegrityError as e:
         abort(409, str(e))
@@ -157,29 +149,29 @@ def addFollower(db):
     response.set_header('Location', f"/createUser{addingFollower['id']}")
 
     return addingFollower
-    #Start following a new user.
-    #pass
+  
 
+#http DELETE localhost:5000/removeFollower username="Alfonso" usernameToRemove="Rosendo"
+@delete("/removeFollower")
+def removeFollower(db):
+    removingFollower = request.json
+    if not removingFollower:
+        abort(400)
 
-@app.route("/removeFollower", methods=['PUT'])
-def removeFollower(username, usernameToRemove):
-    #Stop following a user.
-    pass
+    posted_entry = removingFollower.keys()
+    req_entry = {'username', 'usernameToRemove'}
 
+    if not req_entry <= posted_entry:
+        abort(400, f'Missing fields: {req_entry - posted_entry}')
 
+    try:
+        userID = query(db, 'SELECT userID from user where username = ?', [removingFollower['username']], one=True)
+        followerID = query(db, 'SELECT userID from user WHERE username = ?', [removingFollower['usernameToRemove']], one=True)
+        removingFollower['id'] = execute(db, f"DELETE FROM followers WHERE (userID = \"{userID['userID']}\" AND followingID = \"{followerID['userID']}\")", removingFollower)
+    except sqlite3.IntegrityError as e:
+        abort(409, str(e))
 
+    response.status = 201
+    response.set_header('Location', f"/createUser{removingFollower['id']}")
 
-
-
-
-
-
-
-@get('/seeAllData')
-def seeAllData(db):
-    #see all data
-    all_user = query(db, 'SELECT * FROM user;')
-    all_followers = query(db, 'SELECT * FROM followers;')
-    all_post = query(db, 'SELECT * FROM post;')
-    
-    return {'user': all_user, 'followers': all_followers, 'post': all_post}
+    return removingFollower

@@ -141,15 +141,3 @@ def postTweet(db):
     response.set_header('Location', f"/postTweet{createTweet['postID']}")
 
     return createTweet
-
-
-
-
-@get('/seeAllData')
-def seeAllData(db):
-    #see all data
-    all_user = query(db, 'SELECT * FROM user;')
-    all_followers = query(db, 'SELECT * FROM followers;')
-    all_post = query(db, 'SELECT * FROM post;')
-    
-    return {'user': all_user, 'followers': all_followers, 'post': all_post}
