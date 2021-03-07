@@ -33,7 +33,16 @@ How to run project:
 Methods  
 --------------  
 - Crate User  
-   ``` $ http post localhost:5000/createUser username='Sergio' password='xyz789' email='Sergio@gmail.com' ```
+   ``` $ http post localhost:5000/createUser username='Sergio' password='xyz789' email='Sergio@gmail.com' ```  
+   
+   - JSON
+      ```yaml {
+    "email": "Sarah@gmail.com",
+    "password": "xyz789",
+    "userID": 6,
+    "username": "Sarah"
+}
+
 
 - Check Password  
    ``` $ http localhost:5000/checkPassword/Alfonso/abc123 ```  
