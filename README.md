@@ -36,12 +36,12 @@ Methods
    ``` $ http post localhost:5000/createUser username='Sergio' password='xyz789' email='Sergio@gmail.com' ```  
    
    - JSON
-      ```yaml {
+      ```json {
     "email": "Sarah@gmail.com",
     "password": "xyz789",
     "userID": 6,
     "username": "Sarah"
-}
+} ```
 
 
 - Check Password  
