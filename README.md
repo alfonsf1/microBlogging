@@ -27,18 +27,18 @@ How to run project:
 --------------------  
 1) Download the files from git  
 2) To run the microBlogging service  
-   - Go to the directory in the terminal.  
-   - foreman start  
+   - Go to the directory in the terminal and type.  
+      ``` $ foreman start```  
 
 Methods  
 --------------  
 - Crate User  
    ``` $ http post localhost:5000/createUser username='Sergio' password='xyz789' email='Sergio@gmail.com' ```
 
-- Check Password
+- Check Password  
    ``` $ http localhost:5000/checkPassword/Alfonso/abc123 ```  
 
-- Add Follower
+- Add Follower   
    ``` $ http POST localhost:5000/addFollower username="Alfonso" follower="Rosendo" ```  
 
 - Remove Follower
