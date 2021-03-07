@@ -20,7 +20,7 @@ Install Technologies (Ubuntu)
 ===============================
 1) Foreman, httpie, sqlite3  
    ``` $ sudo apt install --yes python3-pip ruby-foreman httpie sqlite3  ```
-2) Bottle and SQLite plugin for bottle 
+2) Bottle and SQLite plugin for bottle  
    ``` $ python3 -m pip install bottle bottle-sqlite ```  
 
 How to run project:
