@@ -117,7 +117,7 @@ def getPublicTimeline(db):
 
 
 
-
+#http GET localhost:5100/getHomeTimeLine/Alfonso
 @get('/getHomeTimeLine/<username>')
 def getHomeTimeline(username, db):
     #first, checkf if user is in db
