@@ -53,6 +53,6 @@ Methods
 - Home Timeline  
    ``` $ http GET localhost:5100/getHomeTimeLine/Alfonso ```    
 
-- Post Tweet
+- Post Tweet  
    ``` $ http POST localhost:5100/postTweet author="Alfonso" postText="Hello!, My name is Alfonso!" ```   
 
