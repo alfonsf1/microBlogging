@@ -102,17 +102,51 @@ def getUserTimeline(username, db):
     
 
 
-#http GET localhost:5000/getPublicTimeline
+#http GET localhost:5100/getPublicTimeline
 @get('/getPublicTimeline')
 def getPublicTimeline(db):
     public_timeline = query(db, 'SELECT author, postText from post')
 
     return {'public_timeline': public_timeline}
-def getHomeTimeline(username):
+
+
+
+
+
+
+
+
+
+
+@get('/getHomeTimeLine/<username>')
+def getHomeTimeline(username, db):
     #first, checkf if user is in db
     #if not, return error
     #else return recent posts from all the users that this user is following
-    pass
+    userDB = sqlite3.connect('user.db')
+    homeTimeLine = {'home_timeline': []}
+    userID = query(userDB, 'SELECT userID FROM user WHERE username = ?', [username], one = True)
+    followingID = query(userDB, 'SELECT followingID from followers WHERE userID = ?', [userID['userID']])
+
+    for id in followingID: 
+        post = query(db, 'SELECT author, postText, timestamp FROM post WHERE postUserID = ?', [id['followingID']])
+        for post in post:
+            homeTimeLine['home_timeline'].append(post)
+
+    return homeTimeLine
+
+
+    # if not followersPost:
+    #     abort(404)
+    # print(followersPost)
+    # # userTimeline = userPost.reverse()
+    # return {'followersPost': followersPost}
+
+
+
+
+
+
 
 #
 @post('/postTweet')
