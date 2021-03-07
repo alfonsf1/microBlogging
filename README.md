@@ -41,7 +41,7 @@ Methods
 - Add Follower   
    ``` $ http POST localhost:5000/addFollower username="Alfonso" follower="Rosendo" ```  
 
-- Remove Follower
+- Remove Follower  
    ``` $ http DELETE localhost:5000/removeFollower username="Alfonso" usernameToRemove="Rosendo" ```  
   
 - User Timeline  
