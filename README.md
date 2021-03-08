@@ -26,9 +26,14 @@ Install Technologies (Ubuntu)
 How to run project:
 --------------------  
 1) Download the files from git  
-2) To run the microBlogging service  
+2) To create the database   
    - Go to the directory in the terminal and type.  
-      ``` $ foreman start```  
+      ``` $ sqlite3 timeline.db```  
+      ``` $ sqlite3 user.db```  
+3) To start the database, go the root directory  
+   - In the terminal type:  
+      ``` $ formman start ```  
+4) Open a new terminal in the root directory and use the following methods;  
 
 Methods  
 --------------  
