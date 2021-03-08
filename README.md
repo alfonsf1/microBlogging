@@ -33,26 +33,25 @@ How to run project:
 Methods  
 --------------  
 - Crate User  
-   - ``` $ http post localhost:5000/createUser username='Sergio' password='xyz789' email='Sergio@gmail.com' ```  
+   - ``` $ http post localhost:5000/user/new username='Sergio' password='xyz789' email='Sergio@gmail.com' ```  
 
 - Check Password  
-   - ``` $ http localhost:5000/checkPassword/Alfonso/abc123 ```  
+   - ``` $ http localhost:5000/user/password/Alfonso/abc123 ```  
 
 - Add Follower   
-   - ``` $ http POST localhost:5000/addFollower username="Alfonso" follower="Rosendo" ```  
+   - ``` $ http POST localhost:5000/user/follower/new username="Alfonso" follower="Rosendo" ```  
 
 - Remove Follower  
-   - ``` $ http DELETE localhost:5000/removeFollower username="Alfonso" usernameToRemove="Rosendo" ```  
-  
+   - ``` $ http DELETE localhost:5000/user/follower/removal username="Alfonso" usernameToRemove="Rosendo" ```  
 - User Timeline  
-   - ``` $ http GET localhost:5000/getUserTimeline/Alfonso ```  
+   - ``` $ http GET localhost:5100/timeline/Alfonso ```  
 
 - Public Timeline  
-   - ``` $ http GET localhost:5100/getPublicTimeline ```    
+   - ``` $ http GET localhost:5100/timeline/public ```    
 
 - Home Timeline  
-   - ``` $ http GET localhost:5100/getHomeTimeLine/Alfonso ```    
+   - ``` $ http GET localhost:5100/timeline/home/Alfonso ```    
 
 - Post Tweet  
-   - ``` $ http POST localhost:5100/postTweet author="Alfonso" postText="Hello!, My name is Alfonso!" ```   
+   - ``` $ http POST localhost:5100/timeline/post author="Alfonso" postText="Hello!, My name is Alfonso!" ```   
 

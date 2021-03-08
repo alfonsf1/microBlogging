@@ -89,8 +89,8 @@ def execute(db, sql, args=()):
 #Routes
 
 #USER SERVICE
-# http post localhost:5000/createUser username='Sergio' password='xyz789' email='Sergio@gmail.com'
-@post('/createUser')
+# http post localhost:5000/user/new username='Sergio' password='xyz789' email='Sergio@gmail.com'
+@post('/user/new')
 def createUser(db):
     #Registers a new user account. Returns true if username i
     creatingUser = request.json
@@ -116,8 +116,8 @@ def createUser(db):
 
     return creatingUser
  
-# http localhost:5000/checkPassword/Alfonso/abc123
-@get('/checkPassword/<username>/<password>')
+# http localhost:5000/user/password/Alfonso/abc123
+@get('/user/password/<username>/<password>')
 def checkPassword(username, password, db):
     user = query(db, 'SELECT username, password FROM user WHERE (username = ? AND password = ?)', [username, password], one=True)
     if not user:
@@ -125,8 +125,8 @@ def checkPassword(username, password, db):
     #Returns true if the password parameter matches the password stored for the username.
     return {'status': 'true'}
 
-#http POST localhost:5000/addFollower username="Alfonso" follower="Rosendo"
-@post('/addFollower')
+#http POST localhost:5000/user/follower/new username="Alfonso" follower="Rosendo"
+@post('/user/follower/new')
 def addFollower(db):
     addingFollower = request.json
     if not addingFollower:
@@ -151,8 +151,8 @@ def addFollower(db):
     return addingFollower
   
 
-#http DELETE localhost:5000/removeFollower username="Alfonso" usernameToRemove="Rosendo"
-@delete("/removeFollower")
+#http DELETE localhost:5000/user/follower/removal username="Alfonso" usernameToRemove="Rosendo"
+@delete("/user/follower/removal")
 def removeFollower(db):
     removingFollower = request.json
     if not removingFollower:

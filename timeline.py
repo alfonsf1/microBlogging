@@ -84,16 +84,16 @@ def execute(db, sql, args=()):
     cur.close()
 
     return id
-
+#user, posts, timeline
 ######################Routes#####################
 
-#http GET localhost:5000/getUserTimeline/Alfonso
-@get('/getUserTimeline/<username>')
+#http GET localhost:5100/timeline/Alfonso
+@get('/timeline/<username>')
 def getUserTimeline(username, db):
     #first check if user is in db
     #if not, return error
     #else find the post with the most recent date
-    userPost = query(db, 'SELECT author, postText, timestamp FROM post WHERE author = ?', [username])
+    userPost = query(db, 'SELECT author, postText, timestamp FROM post WHERE author = ? ORDER BY postID desc LIMIT 25', [username])
     if not userPost:
         abort(404)
     print(userPost)
@@ -102,23 +102,16 @@ def getUserTimeline(username, db):
     
 
 
-#http GET localhost:5100/getPublicTimeline
-@get('/getPublicTimeline')
+#http GET localhost:5100/timeline/public
+@get('/timeline/public')
 def getPublicTimeline(db):
-    public_timeline = query(db, 'SELECT author, postText from post')
+    public_timeline = query(db, 'SELECT author, postText from post ORDER BY postID desc LIMIT 25')
 
     return {'public_timeline': public_timeline}
 
 
-
-
-
-
-
-
-
-#http GET localhost:5100/getHomeTimeLine/Alfonso
-@get('/getHomeTimeLine/<username>')
+#http GET localhost:5100/timeline/home/Alfonso
+@get('/timeline/home/<username>')
 def getHomeTimeline(username, db):
     #first, checkf if user is in db
     #if not, return error
@@ -129,27 +122,16 @@ def getHomeTimeline(username, db):
     followingID = query(userDB, 'SELECT followingID from followers WHERE userID = ?', [userID['userID']])
 
     for id in followingID: 
-        post = query(db, 'SELECT author, postText, timestamp FROM post WHERE postUserID = ?', [id['followingID']])
+        post = query(db, 'SELECT author, postText, timestamp FROM post WHERE postUserID = ? ORDER BY postID desc LIMIT 25', [id['followingID']])
         for post in post:
             homeTimeLine['home_timeline'].append(post)
+            if len(homeTimeLine['home_timeline']) == 25:
+                break
 
     return homeTimeLine
 
-
-    # if not followersPost:
-    #     abort(404)
-    # print(followersPost)
-    # # userTimeline = userPost.reverse()
-    # return {'followersPost': followersPost}
-
-
-
-
-
-
-
-#
-@post('/postTweet')
+#http POST localhost:5100/timeline/post author="Alfonso" postText="Hello!, My name is Alfonso!"
+@post('/timeline/post')
 def postTweet(db):
     #first check if the ussername exist
     #if not, error
