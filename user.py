@@ -25,14 +25,6 @@ plugin = sqlite.Plugin(app.config['sqlite.dbfile'])
 app.install(plugin)
 
 
-# def get_db():
-#     db = getattr(g, '_database', None)
-#     if db is None:
-#         db = g._database = sqlite3.connect('schema.db')
-#         print("Database connected")
-#     return db
-
-
 #logging.config.fileConfig(app.config['logging.config'])
 
 
@@ -97,9 +89,15 @@ def createUser(db):
     creatingUser = request.json
     if not creatingUser:
         abort(400)
+    posted_entry = creatingUser.keys()
+    req_entry = {'username', 'password', 'email'}
+
+    if not req_entry <= posted_entry:
+        abort(400, f'Missing fields: {req_entry - posted_entry}')
+
     checkUsername = query(db, 'SELECT 1 FROM users WHERE username = ?', [creatingUser['username']])
     if len(checkUsername) == 1:
-        abort(400, f'Username already exists')
+        abort(409, f'Username already exists')
     elif len(creatingUser['password']) < 8:
         abort(400, f'Password length is not 8 or greater')
     elif not re.search(r'\d', creatingUser['password']):
@@ -108,23 +106,17 @@ def createUser(db):
         abort(400, f'Password does not have at least an uppercase letter in it')
     elif not re.match(r"[^@]+@[^@]+\.[^@]+", creatingUser['email']):
         abort(400, f'Invalid email')
-        print("not valid")
-    # posted_entry = creatingUser.keys()
-    # req_entry = {'username', 'password', 'email'}
 
-    # if not req_entry <= posted_entry:
-    #     abort(400, f'Missing fields: {req_entry - posted_entry}')
+    try:
+        creatingUser['userID'] = execute(db, '''
+        INSERT INTO user(username, password, email)
+        VALUES(:username, :password, :email)
+        ''', creatingUser)
+    except sqlite3.IntegrityError as e:
+        abort(409, str(e))
 
-    # try:
-    #     creatingUser['userID'] = execute(db, '''
-    #     INSERT INTO user(username, password, email)
-    #     VALUES(:username, :password, :email)
-    #     ''', creatingUser)
-    # except sqlite3.IntegrityError as e:
-    #     abort(409, str(e))
-
-    # response.status = 201
-    # response.set_header('Location', f"/createUser{creatingUser['userID']}")
+    response.status = 201
+    response.set_header('Location', f"/user{creatingUser['userID']}")
 
     return creatingUser
  
@@ -136,6 +128,7 @@ def checkPassword(username, password, db):
         abort(404)
     #Returns true if the password parameter matches the password stored for the username.
     return {'status': 'true'}
+
 
 #http POST localhost:5000/user/follower/new username="Alfonso" follower="Rosendo"
 @post('/user/follower/add')
@@ -158,7 +151,7 @@ def addFollower(db):
         abort(409, str(e))
 
     response.status = 201
-    response.set_header('Location', f"/createUser{addingFollower['id']}")
+    response.set_header('Location', f"/user/follower/add{addingFollower['id']}")
 
     return addingFollower
   
@@ -184,6 +177,6 @@ def removeFollower(db):
         abort(409, str(e))
 
     response.status = 201
-    response.set_header('Location', f"/createUser{removingFollower['id']}")
+    response.set_header('Location', f"/user/follower/remove{removingFollower['id']}")
 
     return removingFollower
