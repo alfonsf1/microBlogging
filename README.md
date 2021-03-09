@@ -38,25 +38,41 @@ How to run project:
 Methods  
 --------------  
 - Crate User  
-   - ``` $ http post localhost:5000/user/new username='Sergio' password='xyz789' email='Sergio@gmail.com' ```  
+   - createUser function crates a user that is tied to a username, password, and an email  
+      - Example  
+      ``` $ http post localhost:5000/user username='Sergio' password='xyz789' email='Sergio@gmail.com' ```  
 
 - Check Password  
-   - ``` $ http localhost:5000/user/password/Alfonso/abc123 ```  
+   -  checkPassword functon takes in the parameters of a username and password and check it with the data base.  
+      - Exanple  
+      ``` $ http localhost:5000/user/password/Alfonso/abc123 ```  
 
 - Add Follower   
-   - ``` $ http POST localhost:5000/user/follower/new username="Alfonso" follower="Rosendo" ```  
+   - addFollower function takes in the parameter of the username account and the name of the user they wish to follow.  
+      - Example  
+      ``` $ http POST localhost:5000/user/follower/add username="Alfonso" follower="Rosendo" ```  
 
-- Remove Follower  
-   - ``` $ http DELETE localhost:5000/user/follower/removal username="Alfonso" usernameToRemove="Rosendo" ```  
+- Remove Follower
+   - removeFollower function takes in the parameter of the username account and the name of the user they wosh to unfollow  
+      - Example  
+      ``` $ http DELETE localhost:5000/user/follower/remove username="Alfonso" usernameToRemove="Rosendo" ```  
 - User Timeline  
-   - ``` $ http GET localhost:5100/timeline/Alfonso ```  
+   - userTimeline gets all of the posts of the signed in user  
+      - Example  
+      ``` $ http GET localhost:5100/timeline/Alfonso ```  
 
 - Public Timeline  
-   - ``` $ http GET localhost:5100/timeline/public ```    
+   - publicTimeline displays of the users posts from the micro blogging service  
+      - Example  
+      ``` $ http GET localhost:5100/timeline/public ```    
 
 - Home Timeline  
-   - ``` $ http GET localhost:5100/timeline/home/Alfonso ```    
+   - homeTimeLine displays the post of the followers of the user  
+      - Example  
+      ``` $ http GET localhost:5100/timeline/home/Alfonso ```    
 
 - Post Tweet  
-   - ``` $ http POST localhost:5100/timeline/post author="Alfonso" postText="Hello!, My name is Alfonso!" ```   
+   - postTweet function allows users to post to the timeline
+      - Example  
+      ``` $ http POST localhost:5100/timeline/create author="Alfonso" postText="Hello!, My name is Alfonso!" ```   
 
