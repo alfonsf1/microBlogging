@@ -5,7 +5,7 @@ This project contains two RESTful back-end microservices. Our microvlogging API 
 Contributors of the group project:  
 ---------------------------------- 
 1) Alfonso Figueroa - Figueroa.a@csu.fullerton.edu  
-2) Ryan Luong - ryan12@csu.fullerton.edu  
+2) Ryan Luong - Ryan12@csu.fullerton.edu  
   
 Technologies      
 ===============================
@@ -29,16 +29,15 @@ How to run project:
 2) To create the database   
    - Launch the terminal and type  
       ``` cd microBlogging ```  
-      ``` $ sqlite3 timeline.db``` 
-      ``` sqlite> .read timeline.sql```  
-      ``` sqlite> .exit ```  
+      ``` $ sqlite3 timeline.db```  
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;``` sqlite> .read timeline.sql```  
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;``` sqlite> .exit ```  
       ``` $ sqlite3 user.db```  
-      ``` sqlite> .read user.sql```  
-      ``` sqlite> .exit ```  
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;``` sqlite> .read user.sql```  
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;``` sqlite> .exit ```  
 3) To start the database    
    - In the terminal type:  
       ``` $ formman start ```  
-   -  
 4) Open a new terminal in the same directory and use the methods listed below;  
   
     
