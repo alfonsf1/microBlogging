@@ -25,15 +25,25 @@ Install Technologies (Ubuntu)
 
 How to run project:
 --------------------  
-1) Download the files from git  
+1) git clone ``` https://github.com/alfonsf1/microBlogging.git ```      
 2) To create the database   
-   - Go to the directory in the terminal and type.  
-      ``` $ sqlite3 timeline.db```  
+   - Launch the terminal and type  
+      ``` cd microBlogging ```  
+      ``` $ sqlite3 timeline.db``` 
+      ``` sqlite> .read timeline.sql```  
+      ``` sqlite> .exit ```  
       ``` $ sqlite3 user.db```  
-3) To start the database, go the root directory  
+      ``` sqlite> .read user.sql```  
+      ``` sqlite> .exit ```  
+3) To start the database    
    - In the terminal type:  
       ``` $ formman start ```  
-4) Open a new terminal in the root directory and use the following methods;  
+   -  
+4) Open a new terminal in the same directory and use the methods listed below;  
+
+>localhost:5000 is connected to user.db  
+>localhost:5100 is connected timeline.db  
+
 
 Methods  
 --------------  
