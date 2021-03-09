@@ -51,22 +51,22 @@ Methods
 - Crate User  
    - createUser function crates a user that is tied to a username, password, and an email  
       - Example  
-      ``` $ http post localhost:5000/user username='Sergio' password='xyz789' email='Sergio@gmail.com' ```  
+      ``` $ http post localhost:5000/user username="Sergio" password="xyz789A12" email="Sergio@gmail.com" ```  
 
 - Check Password  
    -  checkPassword functon takes in the parameters of a username and password and check it with the data base.  
       - Exanple  
-      ``` $ http localhost:5000/user/password/Alfonso/abc123 ```  
+      ``` $ http get localhost:5000/user/Alfonso/adwO12312 ```  
 
 - Add Follower   
    - addFollower function takes in the parameter of the username account and the name of the user they wish to follow.  
       - Example  
-      ``` $ http POST localhost:5000/user/follower/add username="Alfonso" follower="Rosendo" ```  
+      ``` $ http post localhost:5000/user/follower/add username="Alfonso" follower="Rosendo" ```  
 
 - Remove Follower
-   - removeFollower function takes in the parameter of the username account and the name of the user they wosh to unfollow  
+   - removeFollower function takes in the parameter of the username account and the name of the user they want to unfollow  
       - Example  
-      ``` $ http DELETE localhost:5000/user/follower/remove username="Alfonso" usernameToRemove="Rosendo" ```  
+      ``` $ http DELETE localhost:5000/user/follower/remove username="Alfonso" follower="Rosendo" ```  
 - User Timeline  
    - userTimeline gets all of the posts of the signed in user  
       - Example  
@@ -85,5 +85,5 @@ Methods
 - Post Tweet  
    - postTweet function allows users to post to the timeline
       - Example  
-      ``` $ http POST localhost:5100/timeline/create author="Alfonso" text="Hello!, My name is Alfonso!" ```   
+      ``` $ http post localhost:5100/timeline/create author="Alfonso" text="Hello! Today is Monday" ```   
 
