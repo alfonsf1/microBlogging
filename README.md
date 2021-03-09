@@ -40,11 +40,13 @@ How to run project:
       ``` $ formman start ```  
    -  
 4) Open a new terminal in the same directory and use the methods listed below;  
-
+  
+    
 >localhost:5000 is connected to user.db  
+  
 >localhost:5100 is connected timeline.db  
-
-
+  
+  
 Methods  
 --------------  
 - Crate User  
