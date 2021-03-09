@@ -118,20 +118,22 @@ def getHomeTimeline(username, db):
     #else return recent posts from all the users that this user is following
     userDB = sqlite3.connect('user.db')
     homeTimeLine = {'home_timeline': []}
-    userID = query(userDB, 'SELECT userID FROM user WHERE username = ?', [username], one = True)
-    followingID = query(userDB, 'SELECT followingID from followers WHERE userID = ?', [userID['userID']])
-
-    for id in followingID: 
-        post = query(db, 'SELECT author, postText, timestamp FROM post WHERE postUserID = ? ORDER BY postID desc LIMIT 25', [id['followingID']])
-        for post in post:
-            homeTimeLine['home_timeline'].append(post)
-            if len(homeTimeLine['home_timeline']) == 25:
-                break
+    try:
+        userID = query(userDB, 'SELECT userID FROM user WHERE username = ?', [username], one = True)
+        followingID = query(userDB, 'SELECT followingID from followers WHERE userID = ?', [userID['userID']])
+        for id in followingID: 
+            post = query(db, 'SELECT postID, author, postText, timestamp FROM post WHERE userID = ? ORDER BY postID desc LIMIT 25', [id['followingID']])
+            for post in post:
+                homeTimeLine['home_timeline'].append(post)
+                if len(homeTimeLine['home_timeline']) == 25:
+                    break
+    except sqlite3.IntegrityError as e:
+        abort(409, str(e))
 
     return homeTimeLine
 
 #http POST localhost:5100/timeline/post author="Alfonso" postText="Hello!, My name is Alfonso!"
-@post('/timeline/post')
+@post('/timeline/create')
 def postTweet(db):
     #first check if the ussername exist
     #if not, error
@@ -149,7 +151,7 @@ def postTweet(db):
     
     try:
          userID = query(userDB, 'SELECT userID from user WHERE username = ?', [createTweet['author']], one=True)
-         createTweet['postID'] = execute(db, f'''INSERT INTO post(author, postText, postUserID) 
+         createTweet['postID'] = execute(db, f'''INSERT INTO post(author, postText, userID) 
          VALUES(\"{createTweet['author']}\", \"{createTweet['postText']}\", \"{userID['userID']}\")''', createTweet)
     except sqlite3.IntegrityError as e:
         abort(409, str(e))

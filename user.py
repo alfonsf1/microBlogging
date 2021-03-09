@@ -9,6 +9,7 @@ import textwrap
 import logging.config
 import sqlite3
 import pandas as pd
+import re
 
 
 import bottle
@@ -90,34 +91,45 @@ def execute(db, sql, args=()):
 
 #USER SERVICE
 # http post localhost:5000/user/new username='Sergio' password='xyz789' email='Sergio@gmail.com'
-@post('/user/new')
+@post('/user')
 def createUser(db):
     #Registers a new user account. Returns true if username i
     creatingUser = request.json
     if not creatingUser:
         abort(400)
+    checkUsername = query(db, 'SELECT 1 FROM users WHERE username = ?', [creatingUser['username']])
+    if len(checkUsername) == 1:
+        abort(400, f'Username already exists')
+    elif len(creatingUser['password']) < 8:
+        abort(400, f'Password length is not 8 or greater')
+    elif not re.search(r'\d', creatingUser['password']):
+        abort(400, f'Password does not have at least a number in it')
+    elif not re.match(r'\w*[A-Z]\w*', creatingUser['password']):
+        abort(400, f'Password does not have at least an uppercase letter in it')
+    elif not re.match(r"[^@]+@[^@]+\.[^@]+", creatingUser['email']):
+        abort(400, f'Invalid email')
+        print("not valid")
+    # posted_entry = creatingUser.keys()
+    # req_entry = {'username', 'password', 'email'}
 
-    posted_entry = creatingUser.keys()
-    req_entry = {'username', 'password', 'email'}
+    # if not req_entry <= posted_entry:
+    #     abort(400, f'Missing fields: {req_entry - posted_entry}')
 
-    if not req_entry <= posted_entry:
-        abort(400, f'Missing fields: {req_entry - posted_entry}')
+    # try:
+    #     creatingUser['userID'] = execute(db, '''
+    #     INSERT INTO user(username, password, email)
+    #     VALUES(:username, :password, :email)
+    #     ''', creatingUser)
+    # except sqlite3.IntegrityError as e:
+    #     abort(409, str(e))
 
-    try:
-        creatingUser['userID'] = execute(db, '''
-        INSERT INTO user(username, password, email)
-        VALUES(:username, :password, :email)
-        ''', creatingUser)
-    except sqlite3.IntegrityError as e:
-        abort(409, str(e))
-
-    response.status = 201
-    response.set_header('Location', f"/createUser{creatingUser['userID']}")
+    # response.status = 201
+    # response.set_header('Location', f"/createUser{creatingUser['userID']}")
 
     return creatingUser
  
 # http localhost:5000/user/password/Alfonso/abc123
-@get('/user/password/<username>/<password>')
+@get('/user/<username>/<password>')
 def checkPassword(username, password, db):
     user = query(db, 'SELECT username, password FROM user WHERE (username = ? AND password = ?)', [username, password], one=True)
     if not user:
@@ -126,7 +138,7 @@ def checkPassword(username, password, db):
     return {'status': 'true'}
 
 #http POST localhost:5000/user/follower/new username="Alfonso" follower="Rosendo"
-@post('/user/follower/new')
+@post('/user/follower/add')
 def addFollower(db):
     addingFollower = request.json
     if not addingFollower:
@@ -152,7 +164,7 @@ def addFollower(db):
   
 
 #http DELETE localhost:5000/user/follower/removal username="Alfonso" usernameToRemove="Rosendo"
-@delete("/user/follower/removal")
+@delete("/user/follower/remove")
 def removeFollower(db):
     removingFollower = request.json
     if not removingFollower:
