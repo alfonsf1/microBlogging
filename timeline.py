@@ -81,19 +81,19 @@ def execute(db, sql, args=()):
 #http GET localhost:5100/timeline/Alfonso
 @get('/timeline/<username>')
 def getUserTimeline(username, db):
-    userPost = query(db, 'SELECT author, text, postID, timestamp FROM posts WHERE author = ? ORDER BY postID desc LIMIT 25', [username])
+    userPost = query(db, 'SELECT author, text, postID, timestamp, userID FROM posts WHERE author = ? ORDER BY postID desc LIMIT 25', [username])
     if not userPost:
         abort(404)
     print(userPost)
     # userTimeline = userPost.reverse()
     return {'user_timeline': userPost}
-    
+
 
 
 #http GET localhost:5100/timeline/public
 @get('/timeline/public')
 def getPublicTimeline(db):
-    public_timeline = query(db, 'SELECT author, text, postID, timestamp from posts ORDER BY postID desc LIMIT 25')
+    public_timeline = query(db, 'SELECT author, text, postID, timestamp, userID from posts ORDER BY postID desc LIMIT 25')
 
     return {'public_timeline': public_timeline}
 
@@ -106,8 +106,8 @@ def getHomeTimeline(username, db):
     try:
         userID = query(userDB, 'SELECT userID FROM users WHERE username = ?', [username], one = True)
         followingID = query(userDB, 'SELECT followerID from followers WHERE userID = ?', [userID['userID']])
-        for id in followingID: 
-            post = query(db, 'SELECT postID, author, text, timestamp FROM posts WHERE userID = ? ORDER BY postID desc LIMIT 25', [id['followerID']])
+        for id in followingID:
+            post = query(db, 'SELECT postID, author, text, timestamp , userID FROM posts WHERE userID = ? ORDER BY postID desc LIMIT 25', [id['followerID']])
             for post in post:
                 homeTimeLine['home_timeline'].append(post)
                 if len(homeTimeLine['home_timeline']) == 25:
@@ -127,14 +127,14 @@ def postTweet(db):
         abort(400)
 
     posted_entry=createTweet.keys()
-    req_entry={'author', 'postText'}
+    req_entry={'author', 'text'}
 
     if not req_entry <= posted_entry:
         abort(400, f'Missing fields: {req_entry - posted_entry}')
-    
+
     try:
          userID = query(userDB, 'SELECT userID from users WHERE username = ?', [createTweet['author']], one=True)
-         createTweet['postID'] = execute(db, f'''INSERT INTO posts(author, text, userID) 
+         createTweet['postID'] = execute(db, f'''INSERT INTO posts(author, text, userID)
          VALUES(\"{createTweet['author']}\", \"{createTweet['text']}\", \"{userID['userID']}\")''', createTweet)
     except sqlite3.IntegrityError as e:
         abort(409, str(e))

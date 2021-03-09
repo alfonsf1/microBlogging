@@ -24,9 +24,6 @@ plugin = sqlite.Plugin(app.config['sqlite.dbfile'])
 app.install(plugin)
 
 
-#logging.config.fileConfig(app.config['logging.config'])
-
-
 # Return errors in JSON
 #
 # Adapted from # <https://stackoverflow.com/a/39818780>
@@ -81,10 +78,8 @@ def execute(db, sql, args=()):
 #Routes
 
 #USER SERVICE
-# http post localhost:5000/user/new username='Sergio' password='xyz789' email='Sergio@gmail.com'
 @post('/user')
 def createUser(db):
-    #Registers a new user account. Returns true if username i
     creatingUser = request.json
     if not creatingUser:
         abort(400)
@@ -118,18 +113,15 @@ def createUser(db):
     response.set_header('Location', f"/user{creatingUser['userID']}")
 
     return creatingUser
- 
-# http localhost:5000/user/password/Alfonso/abc123
+
 @get('/user/<username>/<password>')
 def checkPassword(username, password, db):
-    user = query(db, 'SELECT username, password FROM user WHERE (username = ? AND password = ?)', [username, password], one=True)
+    user = query(db, 'SELECT username, password FROM users WHERE (username = ? AND password = ?)', [username, password], one=True)
     if not user:
         abort(404)
-    #Returns true if the password parameter matches the password stored for the username.
     return {'status': 'true'}
 
 
-#http POST localhost:5000/user/follower/new username="Alfonso" follower="Rosendo"
 @post('/user/follower/add')
 def addFollower(db):
     addingFollower = request.json
@@ -143,9 +135,9 @@ def addFollower(db):
         abort(400, f'Missing fields: {req_entry - posted_entry}')
 
     try:
-        userID = query(db, 'SELECT userID from user where username = ?', [addingFollower['username']], one=True)
-        followerID = query(db, 'SELECT userID from user WHERE username = ?', [addingFollower['follower']], one=True)
-        addingFollower['id'] = execute(db, f"INSERT INTO followers(userID, followingID) VALUES(\"{userID['userID']}\", \"{followerID['userID']}\")", addingFollower)
+        userID = query(db, 'SELECT userID from users where username = ?', [addingFollower['username']], one=True)
+        followerID = query(db, 'SELECT userID from users WHERE username = ?', [addingFollower['follower']], one=True)
+        addingFollower['id'] = execute(db, f"INSERT INTO followers(userID, followerID) VALUES(\"{userID['userID']}\", \"{followerID['userID']}\")", addingFollower)
     except sqlite3.IntegrityError as e:
         abort(409, str(e))
 
@@ -153,9 +145,9 @@ def addFollower(db):
     response.set_header('Location', f"/user/follower/add{addingFollower['id']}")
 
     return addingFollower
-  
 
-#http DELETE localhost:5000/user/follower/removal username="Alfonso" usernameToRemove="Rosendo"
+
+
 @delete("/user/follower/remove")
 def removeFollower(db):
     removingFollower = request.json
@@ -163,15 +155,15 @@ def removeFollower(db):
         abort(400)
 
     posted_entry = removingFollower.keys()
-    req_entry = {'username', 'usernameToRemove'}
+    req_entry = {'username', 'follower'}
 
     if not req_entry <= posted_entry:
         abort(400, f'Missing fields: {req_entry - posted_entry}')
 
     try:
-        userID = query(db, 'SELECT userID from user where username = ?', [removingFollower['username']], one=True)
-        followerID = query(db, 'SELECT userID from user WHERE username = ?', [removingFollower['usernameToRemove']], one=True)
-        removingFollower['id'] = execute(db, f"DELETE FROM followers WHERE (userID = \"{userID['userID']}\" AND followingID = \"{followerID['userID']}\")", removingFollower)
+        userID = query(db, 'SELECT userID from users where username = ?', [removingFollower['username']], one=True)
+        followerID = query(db, 'SELECT userID from users WHERE username = ?', [removingFollower['follower']], one=True)
+        removingFollower['id'] = execute(db, f"DELETE FROM followers WHERE (userID = \"{userID['userID']}\" AND followerID = \"{followerID['userID']}\")", removingFollower)
     except sqlite3.IntegrityError as e:
         abort(409, str(e))
 
