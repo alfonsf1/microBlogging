@@ -35,7 +35,6 @@ INSERT INTO followers(userID, followerID) VALUES(2, 5);
 INSERT INTO followers(userID, followerID) VALUES(3, 1);
 INSERT INTO followers(userID, followerID) VALUES(4, 2);
 INSERT INTO followers(userID, followerID) VALUES(5, 4);
-INSERT INTO followers(userID, followerID) VALUES(1, 2);
 INSERT INTO followers(userID, followerID) VALUES(1, 3);
 INSERT INTO followers(userID, followerID) VALUES(3, 7);
 INSERT INTO followers(userID, followerID) VALUES(7, 2);
