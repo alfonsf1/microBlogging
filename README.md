@@ -73,6 +73,6 @@ Methods
 
 - Post Tweet  
    - postTweet function allows users to post to the timeline
-      - Example
+      - Example  
       ``` $ http POST localhost:5100/timeline/create author="Alfonso" postText="Hello!, My name is Alfonso!" ```   
 
