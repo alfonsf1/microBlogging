@@ -4,21 +4,27 @@
 # <https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask>.
 #
 
+# from gateway import auth_required
 import sys
 import textwrap
 import logging.config
 import sqlite3
 import re
 
+from functools import wraps
 
 import bottle
-from bottle import get, post, delete, error, abort, request, response, HTTPResponse
+from bottle import get, post, delete, error, abort, request, response, HTTPResponse, auth_basic
 from bottle.ext import sqlite
+from gateway import is_authenticated_user
+
+
+
 
 #Set up app, plugins, and logging
 
 app = bottle.default_app()
-app.config.load_config('user.ini')
+app.config.load_config('./etc/user.ini')
 
 plugin = sqlite.Plugin(app.config['sqlite.dbfile'])
 app.install(plugin)
@@ -75,6 +81,20 @@ def execute(db, sql, args=()):
 
     return id
 
+
+
+
+# def auth_required(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         auth = request.auth
+#         if auth and auth.username == 'username' and auth.password == 'password':
+#             return f(*args, **kwargs)
+        
+#         return response.set_header("Could not verify your login", 401, {'WWW-Authenticate' : 'Basic realm="Login Required'})
+#     return decorated
+def check(user, password):
+    return user == 'user' and password == 'password'
 #Routes
 
 #USER SERVICE
@@ -123,6 +143,7 @@ def checkPassword(username, password, db):
 
 
 @post('/user/follower/add')
+@auth_basic(is_authenticated_user)
 def addFollower(db):
     addingFollower = request.json
     if not addingFollower:
@@ -147,6 +168,7 @@ def addFollower(db):
     return addingFollower
 
 @get('/user/<username>/follower/list')
+#@auth_basic(is_authenticated_user)
 def followingList(username, db):
     userID = query(db, 'SELECT userID from users WHERE username = ?', [username], one=True)
     if not userID:
@@ -163,6 +185,7 @@ def followingList(username, db):
 
 
 @delete("/user/follower/remove")
+@auth_basic(is_authenticated_user)
 def removeFollower(db):
     removingFollower = request.json
     if not removingFollower:

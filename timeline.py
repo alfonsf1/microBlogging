@@ -11,13 +11,14 @@ import sqlite3
 
 
 import bottle
-from bottle import get, post, error, abort, request, response, HTTPResponse
+from bottle import get, post, error, abort, request, response, HTTPResponse, auth_basic
 from bottle.ext import sqlite
+from gateway import is_authenticated_user
 
 #Set up app, plugins, and logging
 
 app = bottle.default_app()
-app.config.load_config('timeline.ini')
+app.config.load_config('./etc/timeline.ini')
 
 plugin2 = sqlite.Plugin(app.config['sqlite.dbfile2'])
 app.install(plugin2)
@@ -84,14 +85,17 @@ def userTimelineFromID(id, db):
     if not userPost:
         abort(404)
     print(userPost)
+    author = userPost[0]['author']
+    print(author)
     # userTimeline = userPost.reverse()
-    return {'user_timeline': userPost}
+    return {author: userPost}
 
 
 
 
 #http GET localhost:5100/timeline/Alfonso
 @get('/timeline/<username>')
+#@auth_basic(is_authenticated_user)
 def getUserTimeline(username, db):
     userPost = query(db, 'SELECT author, text, postID, timestamp, userID FROM posts WHERE author = ? ORDER BY postID desc LIMIT 25', [username])
     if not userPost:
@@ -104,6 +108,7 @@ def getUserTimeline(username, db):
 
 #http GET localhost:5100/timeline/public
 @get('/timeline/public')
+@auth_basic(is_authenticated_user)
 def getPublicTimeline(db):
     public_timeline = query(db, 'SELECT author, text, postID, timestamp, userID from posts ORDER BY postID desc LIMIT 25')
 
@@ -112,6 +117,7 @@ def getPublicTimeline(db):
 
 #http GET localhost:5100/timeline/home/Alfonso
 @get('/timeline/home/<username>')
+@auth_basic(is_authenticated_user)
 def getHomeTimeline(username, db):
     userDB = sqlite3.connect('user.db')
     homeTimeLine = {'home_timeline': []}
@@ -132,6 +138,7 @@ def getHomeTimeline(username, db):
 
 #http POST localhost:5100/timeline/post author="Alfonso" postText="Hello!, My name is Alfonso!"
 @post('/timeline/create')
+@auth_basic(is_authenticated_user)
 def postTweet(db):
     userDB = sqlite3.connect('user.db')
     createTweet = request.json
