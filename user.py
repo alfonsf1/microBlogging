@@ -146,6 +146,20 @@ def addFollower(db):
 
     return addingFollower
 
+@get('/user/<username>/follower/list')
+def followingList(username, db):
+    userID = query(db, 'SELECT userID from users WHERE username = ?', [username], one=True)
+    if not userID:
+        abort(404)
+
+    followingUserDict = query(db, 'SELECT followerID from followers WHERE userID = ?', [userID['userID']])
+    followingUserList = []
+
+    for item in followingUserDict:
+        followingUserList.append(item['followerID'])
+
+    return {'followerList':followingUserList}
+
 
 
 @delete("/user/follower/remove")

@@ -11,9 +11,13 @@ import http.client
 import logging.config
 
 import bottle
-from bottle import route, request, response
+from bottle import route, request, response, get, auth_basic
+
+
 
 import requests
+from requests import get as retrieve
+# from requests.api import get as gets
 
 
 # Allow JSON values to be loaded from app.config[key]
@@ -26,9 +30,9 @@ def json_config(key):
 # Set up app and logging
 #
 app = bottle.default_app()
-app.config.load_config('gateway.ini')
+app.config.load_config('./etc/gateway.ini')
 
-logging.config.fileConfig(app.config['logging.config'])
+#logging.config.fileConfig(app.config['logging.config'])
 
 userPortList = json_config('users.userports')
 # print("This is the user Port List: ", userPortList)
@@ -81,6 +85,31 @@ if not sys.warnoptions:
 
 
 
+# def auth_required(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         auth = request.authorization
+#         if auth and auth.username == 'username' and auth.password == 'password':
+#             return f(*args, **kwargs)
+        
+#         return response("Could not verify your login", 401, {'WWW-Authenticate' : 'Basic realm="Login Required'})
+#     return decorated
+
+def is_authenticated_user(user, password):
+    pathForCheckPassword = f'/user/{user}/{password}'
+    checkPasswordURL = retrieve(urlPathHelper5100(pathForCheckPassword)).json()
+
+    for key, value in checkPasswordURL.items():
+        keyCheckpassword = value
+        
+
+    if keyCheckpassword == 'true':
+        return True
+    else:
+        return False
+
+    
+
 
 n = -1
 i = -1
@@ -95,7 +124,27 @@ def roundRobinCycle(list):
         return list[i % len(list)]
 
 
+def urlPathHelper5200(path):
+    # return 'http://127.0.0.1:5000' + path
+    return "http://localhost:5200" + path
 
+def urlPathHelper5100(path):
+    # return 'http://127.0.0.1:5100' + path
+    return "http://localhost:5100" + path
+    
+@get('/home/<username>')
+def usernameHome(username):
+    pathForUserService = f'/user/{username}/follower/list'
+    userIDList = retrieve(urlPathHelper5100(pathForUserService)).json()
+    ids = userIDList['followerList']
+    timelineList = []
+    for id in ids:
+        print(type(id))
+    for id in ids:
+        pathForTimelineService = f'/timeline/{str(id)}'
+        timeline = retrieve(urlPathHelper5200(pathForTimelineService)).json()
+        timelineList.append(timeline)
+    return {"list": timelineList}
 
 @route('<url:re:.*>', method='ANY')
 def gateway(url):
@@ -162,3 +211,4 @@ def gateway(url):
             continue
         response.set_header(name, value)
     return upstream_response.content
+
