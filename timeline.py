@@ -78,6 +78,18 @@ def execute(db, sql, args=()):
 #user, posts, timeline
 ######################Routes#####################
 
+@get('/timeline/<id:int>')
+def userTimelineFromID(id, db):
+    userPost = query(db, 'SELECT author, text, postID, timestamp, userID FROM posts WHERE userID = ? ORDER BY postID desc LIMIT 25', [id])
+    if not userPost:
+        abort(404)
+    print(userPost)
+    # userTimeline = userPost.reverse()
+    return {'user_timeline': userPost}
+
+
+
+
 #http GET localhost:5100/timeline/Alfonso
 @get('/timeline/<username>')
 def getUserTimeline(username, db):
